@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Calendar 2026 — Bangladesh</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Serif+Display&family=Libre+Baskerville:wght@400;700&family=Noto+Sans+Bengali:wght@300;400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="hd-year" id="hdYear">2026</div>
+    <div class="orn"><div class="orn-l"></div><div class="orn-d"></div><div class="orn-l"></div></div>
+    <h1 class="hd-title">CALENDAR <span id="titleYear">2026</span></h1>
+    <div class="hd-ar">تقويم ٢٠٢٦ — بنغلاديش</div>
+    <div class="hd-bn">২০২৬ সালের পঞ্জিকা — বাংলাদেশ</div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="sw('ramadan')">🌙 রমজান</div>
+    <div class="tab" onclick="sw('calendar')">📅 বার্ষিক পঞ্জিকা</div>
+    <div class="tab" onclick="sw('ramcal')">🗓️ রমজান ৩০ দিন</div>
+  </div>
+
+  <!-- TAB 1: RAMADAN -->
+  <div class="section active" id="tab-ramadan">
+    <div class="ram-banner">
+      <h2>رَمَضَان كَرِيم ١٤٤٧</h2>
+      <div class="sub">RAMADAN MUBARAK 2026</div>
+      <div class="bn">রমজান মোবারক · ১৯ ফেব্রুয়ারি – ২০ মার্চ ২০২৬</div>
+      <div style="margin-top:.5rem">
+        <button class="loc-pill" onclick="openLocModal()">
+          <span class="loc-pill-icon">📍</span>
+          <span id="currentLocLabel">ঢাকা</span>
+          <span class="loc-pill-arrow">▾</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ram-grid">
+      <!-- Clock -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">🕐</span><span class="rcard-title">বর্তমান সময়</span></div>
+        <div class="big-time" id="clockTime">00:00:00</div>
+        <div class="date-eng" id="clockEn">Loading…</div>
+        <div class="date-hijri" id="clockAr">Loading…</div>
+        <div class="date-bnr" id="clockBn">Loading…</div>
+      </div>
+      <!-- Progress -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">📊</span><span class="rcard-title">রমজান অগ্রগতি</span></div>
+        <div class="prog-labels"><span id="progLbl">Day 0 of 30</span><span id="progPct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div class="stat-grid">
+          <div class="stat-box"><span class="stat-val" id="dComp">0</span><div class="stat-lbl">সম্পন্ন দিন</div></div>
+          <div class="stat-box"><span class="stat-val" id="dLeft">30</span><div class="stat-lbl">বাকি দিন</div></div>
+        </div>
+      </div>
+      <!-- Prayers -->
+      <div class="rcard">
+        <div class="rcard-hd">
+          <span class="rcard-icon">🕌</span>
+          <span class="rcard-title">নামাজের সময়</span>
+          <span class="rcard-loc-badge" id="prayerLocBadge" onclick="openLocModal()">📍 ঢাকা</span>
+        </div>
+        <div class="prayer-list" id="prayerList">
+          <div class="prayer-item"><div class="p-name"><span>🌅</span>ফজর / Fajr</div><div class="p-time" id="t-fajr">--:--</div></div>
+          <div class="prayer-item"><div class="p-name"><span>☀️</span>যোহর / Dhuhr</div><div class="p-time" id="t-dhuhr">--:--</div></div>
+          <div class="prayer-item"><div class="p-name"><span>🌤️</span>আসর / Asr</div><div class="p-time" id="t-asr">--:--</div></div>
+          <div class="prayer-item"><div class="p-name"><span>🌆</span>মাগরিব / Maghrib</div><div class="p-time" id="t-maghrib">--:--</div></div>
+          <div class="prayer-item"><div class="p-name"><span>🌙</span>এশা / Isha</div><div class="p-time" id="t-isha">--:--</div></div>
+        </div>
+      </div>
+      <!-- Countdown -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">⏱️</span><span class="rcard-title">পরবর্তী নামাজ</span></div>
+        <div class="countdown">
+          <div class="cd-label" id="nextPNm">লোড হচ্ছে...</div>
+          <div class="cd-time" id="nextPTm">00:00:00</div>
+        </div>
+      </div>
+      <!-- Suhoor/Iftar -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">🍽️</span><span class="rcard-title">সেহরি ও ইফতার</span></div>
+        <div class="sf-row">
+          <div class="sf-box"><div class="sf-label">সেহরি শেষ / Suhoor</div><div class="sf-time" id="suhoorT">--:--</div></div>
+          <div class="sf-box"><div class="sf-label">ইফতার শুরু / Iftar</div><div class="sf-time" id="iftarT">--:--</div></div>
+        </div>
+      </div>
+      <!-- Verse -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">📖</span><span class="rcard-title">দৈনিক কুরআনিক স্মরণ</span></div>
+        <div class="verse-box">
+          <div class="verse-text" id="verseText">"O you who have believed, decreed upon you is fasting…"</div>
+          <div class="verse-ref" id="verseRef">— Quran 2:183</div>
+        </div>
+      </div>
+      <!-- Today Schedule -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">📋</span><span class="rcard-title">আজকের সময়সূচি</span></div>
+        <div id="todaySchedule"><p style="text-align:center;color:var(--ink-light);padding:1rem;font-family:'Noto Sans Bengali',sans-serif">লোড হচ্ছে...</p></div>
+      </div>
+      <!-- Islamic Quote -->
+      <div class="rcard">
+        <div class="rcard-hd"><span class="rcard-icon">💎</span><span class="rcard-title">ইসলামিক উক্তি</span></div>
+        <div class="quote-card">
+          <div class="quote-en" id="quoteEn"></div>
+          <div class="quote-bn" id="quoteBn"></div>
+          <div class="quote-ref" id="quoteRef"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dua -->
+    <div class="rcard" style="margin-top:.5rem">
+      <div class="rcard-hd"><span class="rcard-icon">🤲</span><span class="rcard-title">সেহরি ও ইফতারের দোয়া</span></div>
+      <div class="dua-card" style="border-color:rgba(27,94,71,0.35);background:linear-gradient(135deg,rgba(27,94,71,.08),rgba(200,150,62,.05))">
+        <div class="dua-type" style="background:linear-gradient(90deg,var(--em),var(--em-mid))">🌙 রোজার নিয়ত — Intention for Fasting</div>
+        <div class="dua-arabic">نَوَيْتُ اَنْ اَصُوْمَ غَدًا مِّنْ شَهْرِ رَمَضَانَ الْمُبَارَكِ فَرْضَا لَكَ يَا اللهُ فَتَقَبَّلْ مِنِّى اِنَّكَ اَنْتَ السَّمِيْعُ الْعَلِيْمُ</div>
+        <div class="dua-translit">Nawaitu an aṣooma ghadan min shahri Ramaḍanal mubaraki farḍal-laka ya Allahu fataqabbal minni innaka antas Samee'ul 'Aleem</div>
+        <div class="dua-bangla">নাওয়াইতু আন আছুমা গাদাম মিন শাহরি রামাদানাল মুবারাকি ফারদাল্লাকা ইয়া আল্লাহু ফাতাকাব্বাল মিন্নি ইন্নাকা আন্তাস সামিউল আলিম।</div>
+        <div class="dua-meaning">অর্থ: হে আল্লাহ! আমি আগামীকাল পবিত্র রমজান মাসের ফরজ রোজা রাখার নিয়ত করলাম।<br><em>(O Allah! I intend to keep tomorrow's obligatory fast of the blessed month of Ramadan for You.)</em></div>
+      </div>
+      <div class="dua-card">
+        <div class="dua-type">🌅 সেহরির দোয়া — Suhoor Du'a</div>
+        <div class="dua-arabic">وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ</div>
+        <div class="dua-translit">Wa bisawmi ghadin nawaitu min shahri Ramadana</div>
+        <div class="dua-bangla">ওয়া বিসাওমি গাদিন নাওয়াইতু মিন শাহরি রামাদানা</div>
+        <div class="dua-meaning">অর্থ: আমি আগামীকাল রমজান মাসে রোজা রাখার নিয়ত করলাম।<br><em>(I intend to keep the fast of tomorrow in the month of Ramadan.)</em></div>
+      </div>
+      <div class="dua-card">
+        <div class="dua-type" style="background:var(--gold)">🌙 ইফতারের দোয়া — Iftar Du'a</div>
+        <div class="dua-arabic">اللَّهُمَّ اِنِّى لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَيْكَ تَوَكَّلْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ</div>
+        <div class="dua-translit">Allahumma inni laka sumtu wa bika amantu wa 'alaika tawakkaltu wa 'ala rizqika aftartu</div>
+        <div class="dua-bangla">আল্লাহুম্মা ইন্নি লাকা সুমতু ওয়া বিকা আমান্তু ওয়া আলাইকা তাওয়াক্কালতু ওয়া আলা রিযক্বিকা আফতারতু</div>
+        <div class="dua-meaning">অর্থ: হে আল্লাহ! আমি তোমার জন্য রোজা রেখেছি, তোমার প্রতি ইমান এনেছি, তোমার উপর ভরসা করেছি।<br><em>(O Allah! I fasted for You, I believe in You, I put my trust in You.)</em><br><small style="color:var(--ink-light)">— আবু দাউদ</small></div>
+      </div>
+      <div class="dua-card" style="border-color:rgba(27,94,71,0.2)">
+        <div class="dua-type" style="background:var(--em-mid)">✨ সংক্ষিপ্ত ইফতার দোয়া</div>
+        <div class="dua-arabic">بِسْمِ اللهِ وَعَلَى بَرَكَةِ اللهِ</div>
+        <div class="dua-translit">Bismillahi wa 'ala barakatillah</div>
+        <div class="dua-bangla">বিসমিল্লাহি ওয়া আলা বারাকাতিল্লাহ</div>
+        <div class="dua-meaning">অর্থ: আল্লাহর নামে এবং আল্লাহর বরকতে।<br><em>(In the name of Allah and with the blessings of Allah.)</em><br><small style="color:var(--ink-light)">— আবু দাউদ</small></div>
+      </div>
+    </div>
+
+    <!-- Links -->
+    <div class="rcard" style="margin-top:.5rem">
+      <div class="rcard-hd"><span class="rcard-icon">🔗</span><span class="rcard-title">ইসলামিক রিসোর্স ও লিংক</span></div>
+      <div class="links-section">
+        <div class="links-title">📅 রমজান সময়সূচি ও ইসলামিক ক্যালেন্ডার</div>
+        <div class="links-grid">
+          <a class="link-card gold" href="https://quranmazid.com/ramadan/bangladesh/" target="_blank" rel="noopener"><span class="link-icon">📖</span><div><span class="link-name">QuranMazid — Bangladesh Ramadan</span><span class="link-desc">quranmazid.com · সব জেলার সেহরি-ইফতার</span></div></a>
+          <a class="link-card gold" href="https://sajda.com/en/ramadan/bangladesh" target="_blank" rel="noopener"><span class="link-icon">🌙</span><div><span class="link-name">Sajda.com — Bangladesh Ramadan</span><span class="link-desc">sajda.com · Ramadan times &amp; calendar</span></div></a>
+          <a class="link-card gold" href="https://www.islamicfinder.org/ramadan-calendar/1185241/dhaka-ramadan-calendar/" target="_blank" rel="noopener"><span class="link-icon">🕌</span><div><span class="link-name">IslamicFinder — ঢাকা রমজান ক্যালেন্ডার</span><span class="link-desc">islamicfinder.org · নির্ভুল সেহরি-ইফতার সময়</span></div></a>
+          <a class="link-card gold" href="https://www.islamicfinder.org/prayer-times/" target="_blank" rel="noopener"><span class="link-icon">⏰</span><div><span class="link-name">IslamicFinder — বৈশ্বিক নামাজের সময়</span><span class="link-desc">islamicfinder.org · বিশ্বব্যাপী সালাত সময়সূচি</span></div></a>
+          <a class="link-card gold" href="https://www.islamicfinder.org/hijri-calendar/" target="_blank" rel="noopener"><span class="link-icon">📆</span><div><span class="link-name">হিজরি ক্যালেন্ডার ১৪৪৭</span><span class="link-desc">islamicfinder.org · ইসলামিক তারিখ রূপান্তর</span></div></a>
+          <a class="link-card gold" href="https://www.islamicfinder.org/qibla-direction/" target="_blank" rel="noopener"><span class="link-icon">🧭</span><div><span class="link-name">কিবলা দিক নির্ণয়</span><span class="link-desc">islamicfinder.org · আপনার অবস্থান থেকে কিবলা</span></div></a>
+        </div>
+      </div>
+      <div class="links-section">
+        <div class="links-title">▶️ ইসলামিক ইউটিউব চ্যানেল</div>
+        <div class="links-grid">
+          <a class="link-card yt" href="https://www.youtube.com/@DrZakirNaik" target="_blank" rel="noopener"><span class="link-icon">🎥</span><div><span class="link-name">Dr. Zakir Naik</span><span class="link-desc">ইসলামিক বক্তৃতা ও প্রশ্নোত্তর</span></div></a>
+          <a class="link-card yt" href="https://www.youtube.com/@noumanalikhan" target="_blank" rel="noopener"><span class="link-icon">🎥</span><div><span class="link-name">Nouman Ali Khan</span><span class="link-desc">Quran Tafsir &amp; Bayyinah TV</span></div></a>
+          <a class="link-card yt" href="https://www.youtube.com/@MuftiMenkOfficial" target="_blank" rel="noopener"><span class="link-icon">🎥</span><div><span class="link-name">Mufti Menk</span><span class="link-desc">Daily Islamic reminders &amp; talks</span></div></a>
+          <a class="link-card yt" href="https://www.youtube.com/@mercifulservant" target="_blank" rel="noopener"><span class="link-icon">🎥</span><div><span class="link-name">The Merciful Servant</span><span class="link-desc">ইসলামিক অনুপ্রেরণামূলক ভিডিও</span></div></a>
+          <a class="link-card yt" href="https://www.youtube.com/@MizanurRahmanAzhari" target="_blank" rel="noopener"><span class="link-icon">🎥</span><div><span class="link-name">Mizanur Rahman Azhari</span><span class="link-desc">বাংলা ইসলামিক বক্তৃতা</span></div></a>
+          <a class="link-card yt" href="https://www.youtube.com/@quranweekly" target="_blank" rel="noopener"><span class="link-icon">📖</span><div><span class="link-name">Quran Weekly</span><span class="link-desc">Daily Quran recitation &amp; explanation</span></div></a>
+        </div>
+      </div>
+      <div class="links-section">
+        <div class="links-title">🌐 ইসলামিক ওয়েবসাইট</div>
+        <div class="links-grid">
+          <a class="link-card" href="https://quran.com" target="_blank" rel="noopener"><span class="link-icon">📗</span><div><span class="link-name">Quran.com</span><span class="link-desc">কুরআন পাঠ ও অনুবাদ — বাংলাসহ</span></div></a>
+          <a class="link-card" href="https://sunnah.com" target="_blank" rel="noopener"><span class="link-icon">📘</span><div><span class="link-name">Sunnah.com</span><span class="link-desc">হাদিস সংকলন — বুখারি, মুসলিম</span></div></a>
+          <a class="link-card" href="https://islamqa.info" target="_blank" rel="noopener"><span class="link-icon">❓</span><div><span class="link-name">IslamQA.info</span><span class="link-desc">ইসলামিক ফতোয়া ও প্রশ্নোত্তর</span></div></a>
+          <a class="link-card" href="https://myislam.org" target="_blank" rel="noopener"><span class="link-icon">🤲</span><div><span class="link-name">MyIslam.org — দোয়া ও যিকির</span><span class="link-desc">রমজানের দোয়া, যিকির, ইবাদত</span></div></a>
+          <a class="link-card" href="https://duas.org" target="_blank" rel="noopener"><span class="link-icon">📿</span><div><span class="link-name">Duas.org — দোয়া সংকলন</span><span class="link-desc">দৈনন্দিন দোয়া ও সুন্নাহ অনুযায়ী যিকির</span></div></a>
+          <a class="link-card" href="https://muslimpro.com" target="_blank" rel="noopener"><span class="link-icon">📱</span><div><span class="link-name">Muslim Pro</span><span class="link-desc">নামাজ সময়, আযান, কিবলা অ্যাপ</span></div></a>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tab-ramadan -->
+
+  <!-- TAB 2: YEAR CAL -->
+  <div class="section" id="tab-calendar">
+    <div class="cal-ctrl">
+      <div class="yr-nav">
+        <button class="nav-btn" onclick="chgYear(-1)">◀</button>
+        <div class="yr-disp" id="yrDisp">2026</div>
+        <button class="nav-btn" onclick="chgYear(1)">▶</button>
+      </div>
+      <button class="btn" onclick="expandAll()">▼ সব খুলুন</button>
+      <button class="btn" onclick="collapseAll()">▲ সব বন্ধ</button>
+      <button class="btn btn-g" onclick="goToday()">● আজকে</button>
+    </div>
+    <div class="legend">
+      <div class="leg-i"><div class="leg-d h"></div><span>সরকারি ছুটি</span></div>
+      <div class="leg-i"><div class="leg-d f"></div><span>শুক্রবার</span></div>
+      <div class="leg-i"><div class="leg-d t"></div><span>আজকে</span></div>
+      <div class="leg-i"><div class="leg-d e"></div><span>ঘটনা আছে</span></div>
+    </div>
+    <div class="months-grid" id="monthsGrid"></div>
+  </div>
+
+  <!-- TAB 3: 30-DAY -->
+  <div class="section" id="tab-ramcal">
+    <div class="pdf-export-bar">
+      <div class="pdf-export-info">
+        <h3>📄 রমজান ক্যালেন্ডার PDF ডাউনলোড</h3>
+        <p id="pdfLocLabel">সম্পূর্ণ ৩০ দিনের সেহরি-ইফতার সময়সূচি — ঢাকা, বাংলাদেশ</p>
+        <div class="pdf-options">
+          <label class="pdf-opt selected"><input type="checkbox" id="chk-bn" checked onchange="this.closest('.pdf-opt').classList.toggle('selected',this.checked)">বাংলা লেবেল</label>
+          <label class="pdf-opt selected"><input type="checkbox" id="chk-en" checked onchange="this.closest('.pdf-opt').classList.toggle('selected',this.checked)">English Label</label>
+          <label class="pdf-opt selected"><input type="checkbox" id="chk-color" checked onchange="this.closest('.pdf-opt').classList.toggle('selected',this.checked)">রঙিন PDF</label>
+          <label class="pdf-opt selected"><input type="checkbox" id="chk-landscape" checked onchange="this.closest('.pdf-opt').classList.toggle('selected',this.checked)">Landscape (A4)</label>
+        </div>
+      </div>
+      <button class="pdf-btn" id="pdfBtn" onclick="generateRamadanPDF()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PDF ডাউনলোড
+      </button>
+    </div>
+    <p style="text-align:center;font-family:'Noto Sans Bengali',sans-serif;font-size:.85rem;color:var(--ink-light);padding:.25rem 0 .75rem" id="ramcalLocNote">ঢাকা, বাংলাদেশ · সময়সূচি পরিবর্তিত হতে পারে</p>
+    <div class="ramcal-grid" id="ramcalGrid"></div>
+  </div>
+</div><!-- /wrap -->
+
+<!-- CAL MODAL -->
+<div class="overlay" id="overlay" onclick="closeOut(event)">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div class="modal-hd">
+      <div class="mod-en" id="mEn"></div>
+      <div class="mod-multi"><div class="mod-ar" id="mAr"></div><div class="mod-bn" id="mBn"></div></div>
+      <div id="mBadge"></div>
+    </div>
+    <div class="modal-body"><div id="mBD"></div><div id="mIntl"></div></div>
+  </div>
+</div>
+
+<!-- LOCATION MODAL -->
+<div class="loc-overlay" id="locOverlay" onclick="closeLocOut(event)">
+  <div class="loc-modal">
+    <div class="loc-modal-hd">
+      <div class="loc-modal-title">📍 অবস্থান পরিবর্তন করুন</div>
+      <div class="loc-modal-sub">আপনার শহর বেছে নিন — নামাজের সময় স্বয়ংক্রিয়ভাবে পরিবর্তিত হবে</div>
+      <button class="loc-close" onclick="closeLocModal()">✕</button>
+    </div>
+    <div class="loc-modal-body">
+      <div class="loc-city-grid" id="citygrid"></div>
+      <button class="loc-confirm-btn" onclick="confirmLocation()">✓ এই শহর নির্বাচন করুন</button>
+      <div class="loc-note">📅 সময়সূচি Islamicfinder.org ও স্থানীয় তথ্যের উপর ভিত্তি করে</div>
+    </div>
+  </div>
+</div>
+
+<!-- DONATE FLOAT -->
+<div class="donate-float">
+  <button class="donate-fab" onclick="openDonation()">
+    <div class="donate-pulse"></div>
+    <span>💝</span> সহায়তা করুন
+  </button>
+</div>
+
+<!-- DONATE MODAL -->
+<div class="don-overlay" id="donOverlay" onclick="closeDonOut(event)">
+  <div class="don-card">
+    <div class="don-header">
+      <div class="don-title">সহায়তা করুন</div>
+      <div class="don-subtitle">Support My Work — আপনার সাহায্য আমার অনুপ্রেরণা</div>
+      <button class="don-close" onclick="closeDonation()">✕</button>
+    </div>
+    <div class="don-body">
+      <div class="don-msg">আপনার যদি আমার কাজটি ভালো লাগে এবং উপকারী মনে হয়, তবে অনুগ্রহ করে সাপোর্ট করুন । আপনার এই সহায়তা ভবিষ্যতে আরও ভালো পণ্য ও সেবা তৈরি করতে আমাকে অনুপ্রেরণা দেবে।</div>
+      <div class="don-methods-title">💳 পেমেন্ট পদ্ধতি</div>
+      <div class="don-method bkash" onclick="copyNumber('01735144475','bkash-btn')">
+        <div class="don-logo">💗</div>
+        <div><span class="don-brand bkash">bKash</span><span class="don-number">01735144475</span><span class="don-type">Personal — Send Money</span></div>
+        <button class="don-copy-btn" id="bkash-btn" onclick="copyNumber('01735144475','bkash-btn');event.stopPropagation()">Copy</button>
+      </div>
+      <div class="don-method nagad" onclick="copyNumber('01735144475','nagad-btn')">
+        <div class="don-logo">🟠</div>
+        <div><span class="don-brand nagad">Nagad</span><span class="don-number">01735144475</span><span class="don-type">Personal — Send Money</span></div>
+        <button class="don-copy-btn" id="nagad-btn" onclick="copyNumber('01735144475','nagad-btn');event.stopPropagation()">Copy</button>
+      </div>
+      <div class="don-method rocket" onclick="copyNumber('01735144475','rocket-btn')">
+        <div class="don-logo">🚀</div>
+        <div><span class="don-brand rocket">Rocket</span><span class="don-number">01735144475</span><span class="don-type">Personal — Send Money</span></div>
+        <button class="don-copy-btn" id="rocket-btn" onclick="copyNumber('01735144475','rocket-btn');event.stopPropagation()">Copy</button>
+      </div>
+      <div class="don-thanks"><span>❤️</span> ধন্যবাদ পাশে থাকার জন্য <span>❤️</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
